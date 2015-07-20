@@ -39,7 +39,47 @@ ellipse = function ellipse(options) {
 	  sizeToRadiousRatio: allows to control size of circles creating heart shape
 	returns a CAG object
 	*/
-	heart = functionheart(options) {
+	heart = function(options) {
+		options = options || {};
+		var center = CSG.parseOptionAs2DVector(options, "center", [0, 0]);
+		var sideSize = CSG.parseOptionAsFloat(options, "sideSize", 1);
+		var resolution = CSG.parseOptionAsInt(options, "resolution", CSG.defaultResolution2D);
+		var sizeToRadiousRatio = CSG.parseOptionAsFloat(options, "sizeToRadiousRatio", 0.45);
+		
+		var sides = [];
+		var leftSide = new CSG.Vector2D(1, 0).times(sideSize);
+		var rightSide = new CSG.Vector2D(0, 1).times(sideSize);
+		var leftCircleStart = center.plus(leftSide).plus(rightSide.times(sizeToRadiousRatio));
+		var rightCircleStart = center.plus(rightSide).plus(leftSide.times(sizeToRadiousRatio));
+		
+		var startVertex = new CAG.Vertex(center);
+		var leftSideVertex = new CAG.Vertex(leftSide.plus(center));
+		var rightSideVertex = new CAG.Vertex(rightSide.plus(center));
+		var leftCircleStartVertex = new CAG.Vertex(leftCircleStart);
+		var rightCircleStartVertex = new CAG.Vertex(rightCircleStart);
+		
+		sides.push(new CAG.Side(startVertex, leftSideVertex));
+		sides.push(new CAG.Side(leftSideVertex, leftCircleStartVertex));
+		sides.push(new CAG.Side(leftCircleStartVertex, rightCircleStartVertex));
+		sides.push(new CAG.Side(rightCircleStartVertex, rightSideVertex));
+		sides.push(new CAG.Side(rightSideVertex, startVertex));
+		
+		var radious = sideSize * sizeToRadiousRatio;
+		var leftCircle = CAG.circle({center: [leftCircleStart._x, leftCircleStart._y], radius: radious});
+		var rightCircle = CAG.circle({center: [rightCircleStart._x, rightCircleStart._y], radius: radious});
+		return CAG.fromSides(sides).union(leftCircle).union(rightCircle);
+	};
+
+	/* Construct an heart using only vertices
+	Netfab status: not valid but repairable!
+	options:
+	  center: a 2D center point
+	  sideSize: a scalar
+	  resolution: number of sides per 360 degree rotation
+	  sizeToRadiousRatio: allows to control size of circles creating heart shape
+	returns a CAG object
+	*/
+	heartNative = functionheart(options) {
 		options = options || {};
 		var center = CSG.parseOptionAs2DVector(options, "center", [0, 0]);
 		var sideSize = CSG.parseOptionAsFloat(options, "sideSize", 1);
@@ -115,3 +155,5 @@ ellipse = function ellipse(options) {
 		sides.push(new CAG.Side(rightSideVertex, startVertex));
 		return CAG.fromSides(sides);
 	};
+	
+	
