@@ -39,7 +39,7 @@ options:
   sizeToRadiousRatio: allows to control size of circles creating heart shape
 returns a CAG object
 */
-heart = function(options) {
+heart = function heart(options) {
 	options = options || {};
 	var center = CSG.parseOptionAs2DVector(options, "center", [0, 0]);
 	var sideSize = CSG.parseOptionAsFloat(options, "sideSize", 1);
@@ -79,7 +79,7 @@ options:
   sizeToRadiousRatio: allows to control size of circles creating heart shape
 returns a CAG object
 */
-heartNative = functionheart(options) {
+heartNative = function heartNative(options) {
 	options = options || {};
 	var center = CSG.parseOptionAs2DVector(options, "center", [0, 0]);
 	var sideSize = CSG.parseOptionAsFloat(options, "sideSize", 1);
