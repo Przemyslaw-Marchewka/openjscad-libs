@@ -30,7 +30,7 @@ ellipse = function ellipse(options) {
 	return CAG.fromSides(sides);
 };
 
-	/* Construct an heart
+	/* Construct a heart
 	Netfab status: not valid but repairable!
 	options:
 	  center: a 2D center point
@@ -70,7 +70,7 @@ ellipse = function ellipse(options) {
 		return CAG.fromSides(sides).union(leftCircle).union(rightCircle);
 	};
 
-	/* Construct an heart using only vertices
+	/* Construct a heart using only vertices
 	Netfab status: not valid but repairable!
 	options:
 	  center: a 2D center point
