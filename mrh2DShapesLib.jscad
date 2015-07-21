@@ -37,6 +37,7 @@ options:
   sideSize: a scalar
   resolution: number of sides per 360 degree rotation
   sizeToRadiousRatio: allows to control size of circles creating heart shape
+  clipping: a scalar that can be used for preparing clipped version of the shape
 returns a CAG object
 */
 heart = function heart(options) {
@@ -45,6 +46,7 @@ heart = function heart(options) {
 	var sideSize = CSG.parseOptionAsFloat(options, "sideSize", 1);
 	var resolution = CSG.parseOptionAsInt(options, "resolution", CSG.defaultResolution2D);
 	var sizeToRadiousRatio = CSG.parseOptionAsFloat(options, "sizeToRadiousRatio", 0.45);
+	var clipping = CSG.parseOptionAsFloat(options, "clipping", 0);
 	
 	var sides = [];
 	var leftSide = new CSG.Vector2D(1, 0).times(sideSize);
@@ -52,9 +54,9 @@ heart = function heart(options) {
 	var leftCircleStart = center.plus(leftSide).plus(rightSide.times(sizeToRadiousRatio));
 	var rightCircleStart = center.plus(rightSide).plus(leftSide.times(sizeToRadiousRatio));
 	
-	var startVertex = new CAG.Vertex(center);
-	var leftSideVertex = new CAG.Vertex(leftSide.plus(center));
-	var rightSideVertex = new CAG.Vertex(rightSide.plus(center));
+	var startVertex = new CAG.Vertex(center.plus(new CSG.Vector2D(clipping, clipping)));
+	var leftSideVertex = new CAG.Vertex(leftSide.plus(center).plus(new CSG.Vector2D(0, clipping)));
+	var rightSideVertex = new CAG.Vertex(rightSide.plus(center).plus(new CSG.Vector2D(clipping, 0)));
 	var leftCircleStartVertex = new CAG.Vertex(leftCircleStart);
 	var rightCircleStartVertex = new CAG.Vertex(rightCircleStart);
 	
@@ -64,7 +66,7 @@ heart = function heart(options) {
 	sides.push(new CAG.Side(rightCircleStartVertex, rightSideVertex));
 	sides.push(new CAG.Side(rightSideVertex, startVertex));
 	
-	var radious = sideSize * sizeToRadiousRatio;
+	var radious = sideSize * sizeToRadiousRatio - clipping;
 	var leftCircle = CAG.circle({center: [leftCircleStart._x, leftCircleStart._y], radius: radious});
 	var rightCircle = CAG.circle({center: [rightCircleStart._x, rightCircleStart._y], radius: radious});
 	return CAG.fromSides(sides).union(leftCircle).union(rightCircle);
